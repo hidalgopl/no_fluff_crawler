@@ -36,6 +36,7 @@ class NoFluffFilteredPage:
         self.load_more_button.click()
 
     def get_offers(self):
+        self.offers = self.driver.find_elements_by_css_selector(sample_settings.OFFERS_SELECTOR)
         self.offers = self.driver.find_elements_by_css_selector('.list-item')
         self.offers = [a.get_attribute('href') for a in self.offers]
 

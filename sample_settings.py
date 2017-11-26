@@ -1,5 +1,5 @@
 # here paste nofluffjobs page where you want to search
-LOOKUP_URL = 'https://nofluffjobs.com/#/criteria=python%20category=backend'
+LOOKUP_URL = 'https://nofluffjobs.com/?criteria=python'
 OUTPUT_FILENAME = 'test.json'
 
 # CSS selectors
@@ -11,7 +11,7 @@ REQUIREMENTS_SELECTORS = {
 SALARY_SELECTOR = {
     'ng-if': 'formData.essentials.salaryFrom'
 }
-SPECS_SELECTOR = {'class': 'panel border-top2'}
+SPECS_SELECTOR = {'class': 'border-top2'}
 
 # KEYWORDS
 MUST = 'Python'

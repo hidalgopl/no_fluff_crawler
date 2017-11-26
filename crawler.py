@@ -4,6 +4,7 @@ from time import sleep
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 
 import sample_settings
 from utils import create_output_dict
@@ -26,7 +27,7 @@ class NoFluffFilteredPage:
         self.driver = webdriver.Chrome()
         try:
             self.response = self.driver.get(self.url)
-        except:
+        except ValueError:
             raise ValueError('Please provide a correct url!')
 
     def click_load_more(self):
@@ -35,31 +36,23 @@ class NoFluffFilteredPage:
         self.load_more_button.click()
 
     def get_offers(self):
-        self.offers = self.driver. \
-            find_elements_by_css_selector(sample_settings.OFFERS_SELECTOR)
+        self.offers = self.driver.find_elements_by_css_selector('.list-item')
+        self.offers = [a.get_attribute('href') for a in self.offers]
 
     def crawl(self):
         count = 0
         self.offers_data = {}
-        for i in range(len(self.offers)):
-            self.offers = self.driver. \
-                find_elements_by_css_selector(sample_settings.OFFERS_SELECTOR)
-            span = self.offers[i]
-            try:
-                title = span.find_element_by_tag_name('h4')
-                self.header = title.text
-                if sample_settings.MUST_NOT in self.header or sample_settings.MUST not in self.header:
-                    continue
-            except:
-                print('Oops! Something went wrong.')
+        for link in self.offers:
+            if sample_settings.MUST_NOT in link or sample_settings.MUST not in link:
+                continue
             count += 1
             try:
-                title.click()
+                self.driver.get(link)
                 inner_data = self.driver.find_element_by_tag_name('body') \
                     .get_attribute('innerHTML')
                 self.offers_data[self.header] = inner_data
                 self.driver.back()
-            except:
+            except WebDriverException:
                 continue
             sleep(sample_settings.WAIT_INTERVAL)
         self.driver.quit()
